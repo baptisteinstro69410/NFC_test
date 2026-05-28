@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Instr'O NFC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family: Arial; text-align: center; padding: 20px; }
+button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  font-size: 18px;
+}
+.card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Gestion matériel NFC</h2>
+
+<div class="card">
+  <div id="equip">Chargement...</div>
+</div>
+
+<button onclick="action('sortie')">📦 Sortie location</button>
+<button onclick="action('retour')">↩️ Retour matériel</button>
+<button onclick="action('controle')">🔧 Contrôle / test</button>
+<button onclick="action('reset')">✅ Remise dispo</button>
+
+<div id="log"></div>
+
+<script>
+const params = new URLSearchParams(window.location.hash.replace('#',''));
+const id = params.get("id");
+
+document.getElementById("equip").innerHTML = id 
+  ? "<b>ID :</b> " + id 
+  : "⚠️ Aucun ID NFC";
+
+function action(type) {
+  const now = new Date().toISOString();
+
+  const data = {
+    id: id,
+    action: type,
+    date: now
+  };
+
+  document.getElementById("log").innerHTML =
+    "<p>✔ Action enregistrée : " + type + "</p>";
+
+  console.log(data);
+
+  // stockage local (offline possible)
+  let logs = JSON.parse(localStorage.getItem("logs") || "[]");
+  logs.push(data);
+  localStorage.setItem("logs", JSON.stringify(logs));
+}
+</script>
+
+</body>
+</html>
